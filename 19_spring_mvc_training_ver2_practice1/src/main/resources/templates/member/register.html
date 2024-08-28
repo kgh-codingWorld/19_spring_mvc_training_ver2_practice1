@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>회원가입 페이지</title>
+<script th:src="@{/ckeditor/ckeditor.js}"></script>
+<script th:src="@{/jquery/jquery-3.7.1.min.js}"></script>
+<script th:src="@{http://dmaps.daum.net/map_js_init/postcode.v2.js}"></script>
+<script>
+
+	$().ready(function(){
+		
+		$("#isValidId").click(function(){
+			
+			let inputId = { "inputId" : $("[name='username']").val() }
+			if (inputId == "") {
+		    	$("#isValidIdMsg").html("<span style='color:red;'>아이디를 입력하세요.</span>");
+		    	return
+			}
+			$.ajax({
+				url : "/member/register",
+				type : "post",
+				data : inputId,
+				success : function(result) {
+					
+					$("#isValidIdMsg").html("<span style='color:green;'>사용가능한 아이디입니다.</span>");
+				}
+			});
+		});
+		
+	});
+</script>
+</head>
+<body>
+	<div align="center">
+		<form th:action="@{/member/register}" method="post" enctype="multipart/form-data">
+			<h3>회원가입</h3>
+			<table border="1">
+				<tr>
+					<td>아이디</td>
+					<td>
+						<input type="text" name="memberId" id="memberId" placeholder="아이디" required/>&emsp;
+						<input type="button" id="isValidId" value="중복확인"/>&emsp;
+						<span id="isValidIdMsg"></span>
+					</td>
+				</tr>
+				<tr>
+					<td>비밀번호</td>
+					<td>
+						<input type="password" name="passWd" id="passWd" placeholder="비밀번호" required/>&emsp;
+						<span id="isValidPwdMsg"></span>
+					</td>
+				</tr>
+				<tr>
+					<td>비밀번호 확인</td>
+					<td>
+						<input type="password" name="chkPassWd" id="chkPassWd" placeholder="비밀번호 확인" required/>&emsp;
+						<span id="isValidChkPwdMsg"></span>
+					</td>
+				</tr>
+				<tr>
+					<td>이름</td>
+					<td><input type="text" name="memberNm" placeholder="이름" required/></td>
+				</tr>
+				<tr>
+					<td>성별</td>
+					<td>
+						<input type="radio" name="sex" value="m" checked/> 남성 &emsp;&emsp;&emsp;
+						<input type="radio" name="sex" value="f"/> 여성
+					</td>
+				</tr>
+				<tr>
+					<td>생일</td>
+					<td><input type="date" name="birthAt" /></td>
+				</tr>
+				<tr>
+					<td>휴대전화</td>
+					<td>
+						<input type="text" name="hp" id="hp" placeholder="전화번호" required/>
+						<input type="checkbox" name="smsYn" id="smsYn" value="y"/>
+					</td>
+				</tr>
+				<tr>
+					<td>이메일</td>
+					<td>
+						<input type="email" name="email" id="email" placeholder="이메일"/>
+						<input type="checkbox" name="emailYn" id="emailYn" value="y"/>
+					</td>
+				</tr>
+				<tr>
+					<td>프로필</td>
+					<td><input type="file" name="uploadProfile" required/></td>
+				</tr>
+				<tr>
+					<td>주소</td>
+					<td>
+						<input type="text" placeholder="우편번호 입력" name="zipCode" id="zipCode"/>
+						<input type="button" th:onclick="javascript:execDaumPostCode()" value="검색"/>
+						<br/><br/>
+						도로명 주소 : <input type="text" name="roadAddr" id="roadAddr" size="60"/>
+						지번 주소 : <input type="text" name="jibunAddr" id="jibunAddr" size="60"/>
+						나머지 주소 : <input type="text" name="namujiAddr" id="namujiAddr" size="60"/>
+					</td>
+				</tr>
+				<tr>
+					<td>기타</td>
+					<td>
+						<textarea rows="10" cols="10" name="etc"></textarea>
+						<script>CKEDITOR.replace('etc')</script>
+					</td>
+				</tr>
+				<tr>
+			        <td colspan="2" align="center">
+			        	<input type="submit" value="회원가입"  >
+			        </td>
+			    </tr>
+			    <tr>
+			        <td colspan="2" align="center">
+			        	<a th:href="@{/member/login}"><strong>로그인하러 가기</strong></a>
+			        </td>
+		        </tr> 
+			</table>
+		</form>
+	</div>
+</body>
+</html>
