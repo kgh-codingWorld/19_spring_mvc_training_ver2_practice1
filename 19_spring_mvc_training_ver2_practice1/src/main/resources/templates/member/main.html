@@ -1,10 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>메인 화면</title>
 </head>
 <body>
-
+	<div align="center">
+		<div th:if="${session.memberId == null}">
+			<p><a th:href="@{/member/register}">회원가입</a></p>
+			<p><a th:href="@{/member/login}">로그인</a></p>
+		</div>
+		<div th:unless="${session.memberId == null}">
+			<p><a href="@{/member/login}">수정하기</a></p>
+			<p><a href="@{/member/login}">탈퇴하기</a></p>
+			<p><a href="@{/member/login}">로그아웃</a></p>
+		</div>
+	</div>
 </body>
 </html>
