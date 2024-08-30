@@ -71,19 +71,48 @@ public class MemberController {
 		return "member/login"; // templates/member/login.html 파일로 포워딩
 	}
 	
+	// 로그인 작업 처리용
 	@PostMapping("login")
-	public String login(@RequestBody MemberDTO memberDTO, HttpServletRequest request) {
+						// 여러 개의 값을 ajax로 전달 받으므로 @RequestBody 사용
+	public String login(@RequestBody MemberDTO memberDTO, 
+						// session을 사용하기 위한 파라미터
+						HttpServletRequest request) {
 		
-		String isValidMember = "n";
+		String isValidMember = "n"; // "n"으로 초기값 설정
 		
-		if(memberService.login(memberDTO)) {
+		if(memberService.login(memberDTO)) { // 회원정보 검색 처리하여 true 또는 false를 반환 > true일 때
 			
-			HttpSession session = request.getSession();
-			session.setAttribute("memberId", memberDTO.getMemberId());
+			HttpSession session = request.getSession(); // 세션 생성
+			session.setAttribute("memberId", memberDTO.getMemberId()); // 세션에 memberId 저장
 			
 			isValidMember = "y";
 		}
 		
-		return isValidMember;
+		return isValidMember; // "y" 반환
+	}
+	
+	// 로그아웃 페이지로 이동
+	@GetMapping("/logout") // localhost/member/logout
+	public String logout(HttpServletRequest request) {
+		
+		HttpSession session = request.getSession();
+		session.invalidate(); // 세션 삭제
+		
+		return "redirect:/member/main"; // /member/main으로 포워딩
+	}
+	
+	// 회원정보 수정 페이지로 이동
+	@GetMapping("/update") //localhost/member/update
+	public String update() {
+		return "member/update";
+	}
+	
+	// 회원정보 수정 작업 처리용
+	@PostMapping("/update")
+	public String update(@RequestParam("uploadProfile") MultipartFile uploadProfile, @ModelAttribute MemberDTO memberDTO) throws IllegalStateException, IOException {
+		
+		memberService.updateMember(uploadProfile, memberDTO);
+		
+		return "redirect:/member/main";
 	}
 }

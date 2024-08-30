@@ -11,5 +11,7 @@ public interface MemberService {
 	public void createMember(MultipartFile uploadProfile, MemberDTO memberDTO) throws IllegalStateException, IOException;
 	public String checkValidId(String memberId);
 	public boolean login(MemberDTO memberDTO);
+	public MemberDTO getMemberDetail(String memberId); // 세부정보 가져오기
+	public void updateMember(MultipartFile uploadProfile, MemberDTO memberDTO) throws IllegalStateException, IOException;
 	
 }

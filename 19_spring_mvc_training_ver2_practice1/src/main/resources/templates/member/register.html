@@ -8,40 +8,74 @@
 <script th:src="@{http://dmaps.daum.net/map_js_init/postcode.v2.js}"></script>
 <script>
 
+	let isPassId = false;
+	let isPassPasswd = false;
+
 	$().ready(function(){
 		
 		$("#isValidId").click(function(){
 			
-			let inputId = { "inputId" : $("[name='username']").val() }
-			if (inputId == "") {
+			let memberId = $("#memberId").val()
+			
+			if (memberId == "") {
 		    	$("#isValidIdMsg").html("<span style='color:red;'>아이디를 입력하세요.</span>");
 		    	return
 			}
 			$.ajax({
 				url : "/member/register",
 				type : "post",
-				data : inputId,
-				success : function(result) {
+				data : { "memberId" : memberId },
+				success : function(isValidId) {
 					
-					if(result == "y"){
+					if(isValidId == "y"){
 						
 						$("#isValidIdMsg").html("<span style='color:green;'>사용가능한 아이디입니다.</span>");
+						isPassId = true;
 					}
-					else if(result == "n"){
+					else if(isValidId == "n"){
 						
 						$("#isValidIdMsg").html("<span style='color:red;'>사용 불가능한 아이디입니다.</span>");
+						isPassId = false;
 					}
 					
 				}
 			});
 		});
 		
+		$("#chkPassWd").blur(function(){
+			
+			let passWd = $("#passWd").val();
+			let chkPassWd = $("#chkPassWd").val();
+			
+			if(passWd == chkPassWd) {
+				$("#isValidChkPwdMsg").html("<span stype='color:green';>패스워드가 일치합니다.</span>");
+				isPassPasswd = true;
+			} else {
+				$("#isValidChkPwdMsg").html("<span stype='color:green';>패스워드가 일치하지 않습니다.</span>");
+				isPassPasswd = false;
+			}
+		});
+		
+		function checkFormValidation() {
+			
+			if(!isPassId) {
+				alert("아이디를 확인해 주세요.");
+				$("#memberId").focus();
+				return false;
+			}
+			if(!isPassPasswd) {
+				alert("패스워드를 확인해 주세요.");
+				$("#chkPassWd").focus();
+				return false;
+			}
+		}
+		
 	});
 </script>
 </head>
 <body>
 	<div align="center">
-		<form th:action="@{/member/register}" method="post" enctype="multipart/form-data">
+		<form th:action="@{/member/register}" method="post" enctype="multipart/form-data" th:onsubmit="return checkFromValidation();">
 			<h3>회원가입</h3>
 			<table border="1">
 				<tr>

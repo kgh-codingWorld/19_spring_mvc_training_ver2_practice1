@@ -12,6 +12,7 @@
 	body{
 	    font-size: 14px;
 	    font-family: 'Roboto', sans-serif;
+	    text-align: center;
 	}
 	
 	.login-wrapper{
@@ -98,7 +99,7 @@
 </script>
 </head>
 <body>
-	<div class="login-wrapper">
+	<div class="login-wrapper" align="center">
         <h2>Login</h2>
         <form th:action="@{/member/login}" method="post"  id="login-form">
             <input type="text" name="memberId" placeholder="Email">

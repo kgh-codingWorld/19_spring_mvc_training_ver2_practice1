@@ -15,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.application.traningVer2.practice1.dao.MemberDAO;
 import com.application.traningVer2.practice1.dto.MemberDTO;
 
+// 항시 데이터가 비었는지 확인하는 로직이 필요함
+
 @Service
 public class MemberServiceImpl implements MemberService {
 	
@@ -39,20 +41,20 @@ public class MemberServiceImpl implements MemberService {
 		// About File Uploads
 		if(!uploadProfile.isEmpty()) { // 업로드된 파일이 있으면 
 			String originalFileName = uploadProfile.getOriginalFilename(); // 해당 파일의 이름을 가져와 변수에 담음
-			memberDTO.setProfOrigName(originalFileName); // 그 변수를 DTO에 저장
+			memberDTO.setProfileOriginalName(originalFileName); // 그 변수를 DTO에 저장
 			
 			String extension = originalFileName.substring(originalFileName.lastIndexOf(".")); // 확장자 구하기
 			
 			String uploadFile = UUID.randomUUID() + extension; // 랜덤으로 UUID를 만들어 확장자와 합치고 변수에 담음
-			memberDTO.setProfUUID(uploadFile); // 그 변수를 DTO에 저장
+			memberDTO.setProfileUUID(uploadFile); // 그 변수를 DTO에 저장
 		
 			uploadProfile.transferTo(new File(fileRepositoryPath + uploadFile)); // 새로운 파일명으로 최종 업데이트
 		
 		}
 		
 		// About Status Y or N
-		if(memberDTO.getSmsYn() == null) memberDTO.setSmsYn("n");
-		if(memberDTO.getEmailYn() == null) memberDTO.setEmail("n");
+		if(memberDTO.getSmsstsYn() == null) memberDTO.setSmsstsYn(fileRepositoryPath);
+		if(memberDTO.getEmailstsYn() == null) memberDTO.setEmail("n");
 		
 		// About Password
 		memberDTO.setPassWd(passwordEncoder.encode(memberDTO.getPassWd())); // memberDTO에 저장된 비밀번호를 인코딩하여 다시 저장
@@ -73,15 +75,44 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public boolean login(MemberDTO memberDTO) {
 		
-		MemberDTO validateData = memberDAO.login(memberDTO.getMemberId());
+		MemberDTO validateData = memberDAO.login(memberDTO.getMemberId()); // memberId를 이용하여 비밀번호와 활동여부 데이터를 가져옴
 		
-		if(validateData != null) {
+		if(validateData != null) { // null이 아니면(조회된 회원정보가 있으면)
 			
-			if(passwordEncoder.matches(memberDTO.getPassWd(), validateData.getPassWd()) && validateData.getActiveYn().equals("y")) {
-				return true;
+									   // 사용자가 입력한 비밀번호  // 데이터베이스에 저장된 비밀번호 //그리고 		// 계정활성 여부
+			if(passwordEncoder.matches(memberDTO.getPassWd(),       validateData.getPassWd())           &&    		validateData.getActiveYn().equals("y")) {
+				return true; // 로그인 성공
 			}
 		}
-		return false;
+		return false; // 로그인 실패
+	}
+
+	@Override
+	public MemberDTO getMemberDetail(String memberId) {
+		return memberDAO.getMemberDetail(memberId);
+		
+	}
+	
+	@Override
+	public void updateMember(MultipartFile uploadProfile, MemberDTO memberDTO) throws IllegalStateException, IOException {
+		
+		if(!uploadProfile.isEmpty()) {
+			
+			new File(fileRepositoryPath + memberDTO.getProfileUUID()).delete(); // 기존 파일 삭제
+			
+			String originalFilename = uploadProfile.getOriginalFilename(); // 원본파일명 가져오기
+			memberDTO.setProfileOriginalName(originalFilename);
+			
+			String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+			
+			String uploadFile = UUID.randomUUID() + extension;
+			memberDTO.setProfileUUID(uploadFile);
+			
+			uploadProfile.transferTo(new File(fileRepositoryPath + uploadFile));
+		}
+		
+		memberDAO.updateMember(memberDTO);
+		
 	}
 
 }
