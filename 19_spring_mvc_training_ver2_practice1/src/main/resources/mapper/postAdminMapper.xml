@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.application.trainingVer2.postAdvance.dao.AdminDAO">
+
+	<!-- Admin 로그인 -->
+	<select id="signIn" parameterType="AdminDTO" resultType="AdminDTO">
+		SELECT *
+		FROM   ADMIN
+		WHERE  ADMIN_ID = #{adminId} 
+		  AND  ADMIN_PASSWD = #{adminPasswd}
+	</select>
+	
+	<!-- 유저 전체정보 조회 -->
+	<select id="getUserList" resultType="UserDTO"> 
+		SELECT *
+		FROM   USER
+	</select>
+	
+	<!-- 게시글 전체정보 조회 -->
+	<select id="getPostList" resultType="PostDTO"> 
+		SELECT *
+		FROM   POST
+	</select>
+	
+	<!-- 댓글 전체정보 조회 -->
+	<select id="getReplyList" resultType="ReplyDTO"> 
+		SELECT *
+		FROM   REPLY
+	</select>
+
+	<!-- 일자별 신규가입 회원숫자 조회 -->
+	<select id="getDailyNewUserCnt" resultType="hashmap">
+		SELECT	 LEFT(JOIN_AT , 10)   AS day,
+			     COUNT(*)			  AS userCnt
+		FROM	 USER
+		GROUP BY LEFT(JOIN_AT , 10)
+	</select>
+	
+	<!-- 일자별 게시글작성 숫자 조회 -->
+	<select id="getDailyPostCnt" resultType="hashmap">
+		SELECT   LEFT(ENROLL_AT , 10) AS day,
+			     COUNT(*)			  AS postCnt
+		FROM     POST
+		GROUP BY LEFT(ENROLL_AT , 10)
+	</select>
+	
+	<!-- 일자별 댓글작성 숫자 조회 -->
+	<select id="getDailyReplyCnt" resultType="hashmap">
+		SELECT   LEFT(ENROLL_AT , 10) AS day,
+			     COUNT(*)			  AS replyCnt
+		FROM     REPLY
+		GROUP BY LEFT(ENROLL_AT , 10)
+	</select>
+
+</mapper>

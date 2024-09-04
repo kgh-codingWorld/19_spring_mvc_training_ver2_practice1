@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Update Reply</title>
+</head>
+<body>
+
+	<p align="right">
+		<a th:href="@{/post/postList}">(공통)커뮤니티 게시글로 이동</a> 
+		<th:block th:if="${session.userId == null}">
+			<a th:href="@{/user/signIn}">로그인</a>
+		</th:block>
+		<th:block th:if="${session.userId != null}">
+			<a th:href="@{/user/myPage}">마이페이지</a> 
+			<a th:href="@{/user/signOut}">로그아웃</a>
+		</th:block>
+	</p>
+	
+	<div align="center" style="padding-top: 100px">
+		<h2>댓글 수정하기</h2>
+		<form th:action="@{/reply/updateReply}" method="post">
+			<table border="1">
+				<tr>
+					<td>작성일</td>
+					<td th:text="${#dates.format(replyDTO.enrollAt , 'yyyy-MM-dd')}"></td>
+				</tr>
+				<tr>
+					<td>작성자 ID</td>
+					<td><input type="text" name="userId" th:value="${replyDTO.userId }" readonly/></td>
+				</tr>
+				<tr>
+					<td>댓글</td>
+					<td>
+						<textarea rows="10" cols="60" name="content" th:text="${replyDTO.content }"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" align="right">
+						<input type="hidden" name="postId" th:value="${replyDTO.postId }" /> 
+						<input type="hidden" name="replyId" th:value="${replyDTO.replyId }" /> 
+						<input type="submit" value="댓글수정" />
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+</body>
+</html>

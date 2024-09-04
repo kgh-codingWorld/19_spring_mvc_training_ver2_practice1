@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Passwd Update</title>
+<script th:src="@{/jquery/jquery-3.7.1.min.js}"></script>
+<script>
+
+	
+	function confirmProcess() {
+		
+		if (confirm("정말 변경하시겠습니까?")) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		
+	}
+	
+	$(function(){
+		
+		$("[name='confirmPasswd'] , [name='passwd']").keyup(function(){
+			
+			let passwd = $("[name='passwd']").val();
+			let confirmPasswd = $("[name='confirmPasswd']").val();
+			
+			if (passwd == confirmPasswd) {
+				$("#msg").html("<span style='color:green;'>패스워드가 일치합니다.</span>");
+				$("[type='submit']").prop("disabled" , false);
+			}
+			else {
+				$("#msg").html("<span style='color:red;'>패스워드가 일치하지 않습니다.</span>");
+				$("[type='submit']").prop("disabled" , true);
+			}
+			
+		});	
+		
+	});
+	
+	
+</script>
+</head>
+<body>
+
+	<p align="right">
+		<a th:href="@{/post/postList}">(공통)커뮤니티 게시글로 이동</a> 
+		<th:block th:if="${session.userId == null}">
+			<a th:href="@{/user/signIn}">로그인</a>
+		</th:block>
+		<th:block th:if="${session.userId != null}">
+			<a th:href="@{/user/myPage}">마이페이지</a> 
+			<a th:href="@{/user/signOut}">로그아웃</a>
+		</th:block>
+	</p>
+	
+	<div align="center">
+		<h3>비밀번호 변경하기</h3>
+		<form th:action="@{/user/updatePasswd}" method="post" th:onsubmit="return confirmProcess()">
+			<input type="hidden" name="userId" th:value="${session.userId}"/>
+			<table border="1">
+				<tr>
+					<th>비밀번호</th>
+					<td>
+						<input type="password" name="passwd" placeholder="변경할 비밀번호를 입력하세요."/>
+					</td>
+				</tr>
+				<tr>
+					<th>비밀번호 확인</th>
+					<td>
+						<input type="password" name="confirmPasswd" placeholder="비밀번호를 한번더 입력하세요."/>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<span id="msg"></span>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" align="right">
+						<input type="submit" value="변경하기" disabled>
+						<input type="button" value="취소" th:onclick="|location.href='@{/user/myPage}'|">
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	
+</body>
+</html>

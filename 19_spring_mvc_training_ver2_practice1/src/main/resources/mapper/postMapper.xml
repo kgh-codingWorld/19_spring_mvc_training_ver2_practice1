@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.application.trainingVer2.postAdvance.dao.PostDAO">
+
+	<!-- 게시글 관련 조회 데이터 매핑(Table Column -> Map key) -->
+	<resultMap id="postMap" type="hashmap" >
+		<result column="POST_ID"  	   property="postId"/>
+		<result column="SUBJECT" 	   property="subject"/>
+		<result column="CONTENT" 	   property="content"/>
+		<result column="READ_CNT" 	   property="readCnt"/>
+		<result column="ENROLL_AT" 	   property="enrollAt"/>
+		<result column="USER_ID"       property="userId"/>
+		<result column="NICKNAME"     property="nickname"/>
+		<result column="PROFILE_UUID"  property="profileUUID"/>
+	</resultMap>
+
+	<!-- 게시글 전체조회 -->
+	<select id="getPostList" resultMap="postMap">
+		SELECT P.POST_ID 		AS POST_ID,
+			   P.SUBJECT		AS SUBJECT,
+			   P.READ_CNT		AS READ_CNT,
+			   P.ENROLL_AT		AS ENROLL_AT,
+			   U.NICKNAME		AS NICKNAME,
+			   U.PROFILE_UUID 	AS PROFILE_UUID
+		FROM   POST P
+		JOIN   USER U
+		  ON   P.USER_ID = U.USER_ID
+	</select>
+	
+	<!-- 전체게시글 개수 -->
+	<select id="getAllPostCnt" resultType="int">
+		SELECT COUNT(*)
+		FROM   POST
+	</select>
+
+	<!--  1개의 게시글 상세조회 -->
+	<select id="getPostDetail" parameterType="long" resultMap="postMap">
+		SELECT P.POST_ID 		AS POST_ID,
+			   P.SUBJECT		AS SUBJECT,
+			   P.READ_CNT		AS READ_CNT,
+			   P.ENROLL_AT		AS ENROLL_AT,
+			   P.CONTENT		AS CONTENT,
+			   U.USER_ID		AS USER_ID,
+			   U.NICKNAME		AS NICKNAME,
+			   U.PROFILE_UUID 	AS PROFILE_UUID
+		FROM   POST P
+		JOIN   USER U
+		  ON   P.USER_ID = U.USER_ID
+		WHERE  POST_ID = #{postId}
+	</select>
+	
+	<!-- 조회수 증가 -->
+	<update id="updateReadCnt" parameterType="long">
+		UPDATE	POST
+		SET		READ_CNT = READ_CNT + 1
+		WHERE	POST_ID = #{postId}
+	</update>
+	
+	<!--  게시글 작성 -->
+	<insert id="createPost" parameterType="PostDTO">
+		INSERT INTO POST (
+				USER_ID,
+				SUBJECT,
+				CONTENT
+		)
+		VALUES (
+				#{userId},
+				#{subject},
+				#{content}
+		)
+	</insert>
+	
+	<!-- 게시글 수정 -->
+	<update id="updatePost" parameterType="PostDTO">
+		UPDATE  POST 
+		<set> 	
+				<if test="subject != null and subject != ''">
+					SUBJECT = #{subject}, 
+				</if>
+				<if test="content != null and content != ''">
+					CONTENT = #{content}
+				</if>
+		</set>
+		WHERE 	POST_ID = #{postId}
+	</update>
+	
+	<!-- 게시글 삭제 -->
+	<delete id="deletePost" parameterType="long">
+		DELETE FROM POST 
+		WHERE 		POST_ID = #{postId}
+	</delete>
+
+ </mapper>

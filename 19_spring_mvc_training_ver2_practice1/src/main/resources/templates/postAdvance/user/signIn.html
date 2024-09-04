@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Sign In</title>
+<script th:src="@{/jquery/jquery-3.7.1.min.js}"></script>
+<script>
+
+	$(function(){
+		
+		$("#signInBtn").click(function(){
+			
+			let signInData = {
+				"userId" : $("[name='userId']").val(),
+				"passwd" : $("[name='passwd']").val()
+			}
+			
+			$.ajax({
+				url : "/user/signIn",
+				type : "post",
+				contentType : "application/json",
+				data : JSON.stringify(signInData),
+				success : function (isValidMember) {
+					
+					if (isValidMember == "y") {
+						location.href = "/post/postList";
+					}
+					else {
+						$("#failMsg").html("<span style='color:red;'>아이디와 패스워드를 확인하세요.</span>");
+					}
+					
+				}
+				
+				
+			});
+			
+		});
+		
+	});
+
+</script>
+</head>
+<body>
+
+	<p align="right">
+		<a th:href="@{/post/postList}">(공통)커뮤니티 게시글로 이동</a> 
+		<th:block th:if="${session.userId == null}">
+			<a th:href="@{/user/signIn}">로그인</a>
+		</th:block>
+		<th:block th:if="${session.userId != null}">
+			<a th:href="@{/user/myPage}">마이페이지</a> 
+			<a th:href="@{/user/signOut}">로그아웃</a>
+		</th:block>
+	</p>
+	
+	<div align="center">
+	<h3>Sign In</h3>
+		<table border="1">
+			<tr>
+				<td align="center">아이디</td>
+				<td><input type="text"  name="userId" placeholder="아이디를 입력하세요." /></td>
+			</tr>
+			<tr>
+				<td>패스워드</td>
+				<td><input type="password" name="passwd" placeholder="패스워드를 입력하세요." /> <br>
+					<span id="failMsg" ></span>
+				</td>
+			</tr>
+			<tr align="right">
+				<td colspan="2"><input type="button" id="signInBtn" value="Sign In"></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					아직 회원이 아니시면? <a th:href="@{/user/signUp}">회원가입하기</a>
+				</td>
+			</tr> 
+		</table>
+	</div>
+	
+</body>
+</html>

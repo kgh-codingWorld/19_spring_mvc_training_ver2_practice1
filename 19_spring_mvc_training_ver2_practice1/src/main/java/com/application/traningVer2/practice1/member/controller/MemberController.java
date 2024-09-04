@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.application.traningVer2.practice1.dto.MemberDTO;
-import com.application.traningVer2.practice1.service.MemberService;
+import com.application.traningVer2.practice1.member.dto.MemberDTO;
+import com.application.traningVer2.practice1.member.service.MemberService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;

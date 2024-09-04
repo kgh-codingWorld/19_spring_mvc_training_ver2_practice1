@@ -75,7 +75,7 @@
 			let param = {
 					
 					"memberId" : $("[name='memberId']").val(),
-					"passWd" : $("[name='passWd']").val()
+					"passwd" : $("[name='passwd']").val()
 			}
 			
 			$.ajax({
@@ -103,7 +103,7 @@
         <h2>Login</h2>
         <form th:action="@{/member/login}" method="post"  id="login-form">
             <input type="text" name="memberId" placeholder="Email">
-            <input type="password" name="passWd" placeholder="Password">
+            <input type="password" name="passwd" placeholder="Password">
             <label for="remember-check">
                 <input type="checkbox" id="remember-check">아이디 저장하기
             </label>

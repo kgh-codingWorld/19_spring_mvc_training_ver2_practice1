@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>User Update</title>
+</head>
+<body>
+
+	<p align="right">
+		<a th:href="@{/post/postList}">(공통)커뮤니티 게시글로 이동</a> 
+		<th:block th:if="${session.userId == null}">
+			<a th:href="@{/user/signIn}">로그인</a>
+		</th:block>
+		<th:block th:if="${session.userId != null}">
+			<a th:href="@{/user/myPage}">마이페이지</a> 
+			<a th:href="@{/user/signOut}">로그아웃</a>
+		</th:block>
+	</p>
+	
+	<div align="center">
+		<form th:action="@{/user/updateUser}" th:object="${userDTO}" method="post" enctype="multipart/form-data">
+			<h3>회원정보 수정하기</h3>
+			<table border="1">
+				<tr>
+					<td>아이디</td>
+					<td>
+			            <input type="text" th:field="*{userId}" readonly/> 
+			        </td>
+			    </tr>
+		        <tr>
+			        <td>닉네임</td>
+			        <td>
+			        	<input type="text" th:field="*{nickname}"/> 
+			        </td>
+		        </tr>                
+		        <tr>
+			        <td>프로필</td>
+			        <td>
+			        	<img th:src="@{/user/thumbnails(fileName=${userDTO.profileUUID})}"  width="50" height="50"/>
+			        	<input type="file" name="uploadProfile" />
+			        	<input type="hidden" th:field="*{profileUUID}" />
+			        </td>
+		        </tr>                              
+		        <tr>
+			        <td>이메일</td>
+			        <td>
+			        	<input type="email" th:field="*{email}">  
+			        </td>
+		        </tr>
+		        <tr>
+			        <td colspan="2" align="center">
+			        	<input type="submit" value="수정하기"  >
+			        </td>
+			    </tr>
+		     </table>
+	     </form>
+	</div>
+	
+</body>
+</html>

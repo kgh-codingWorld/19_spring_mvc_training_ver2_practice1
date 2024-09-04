@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Admin Main</title>
+</head>
+<body>
+
+	<p align="right">
+		<th:block th:if="${session.adminId != null}">
+			<a th:href="@{/admin/main}">(공통)관리화면으로 이동</a> 
+			<a th:href="@{/admin/signOut}">로그아웃</a>
+		</th:block>
+	</p>
+
+	<div align="center">
+		<h2>Management</h2>
+		<table border="1">
+			<tr>
+				<th>유저리스트 조회</th>
+				<td><a th:href="@{/admin/adminUserList}">조회하기</a></td>
+			</tr>
+			<tr>
+				<th>게시글리스트 조회</th>
+				<td><a th:href="@{/admin/adminPostList}">조회하기</a></td>
+			</tr>
+			<tr>
+				<th>댓글리스트 조회</th>
+				<td><a th:href="@{/admin/adminReplyList}">조회하기</a></td>
+			</tr>
+			<tr>
+				<th>일자별 신규회원 가입숫자 조회</th>
+				<td><a th:href="@{/admin/dailyNewUserCnt}">조회하기</a></td>
+			</tr>
+			<tr>
+				<th>일자별 게시글 숫자 조회</th>
+				<td><a th:href="@{/admin/dailyPostCnt}">조회하기</a></td>
+			</tr>
+			<tr>
+				<th>일자별 댓글 숫자 조회</th>
+				<td><a th:href="@{/admin/dailyReplyCnt}">조회하기</a></td>
+			</tr>
+		</table>
+	</div>
+
+</body>
+</html>

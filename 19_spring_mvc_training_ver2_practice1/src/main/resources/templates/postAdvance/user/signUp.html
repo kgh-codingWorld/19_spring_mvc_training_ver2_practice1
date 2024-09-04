@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Sign Up</title>
+<script th:src="@{/jquery/jquery-3.7.1.min.js}"></script>
+<script>
+
+	let isPassId = false;
+	let isPassNickName = false;
+	let isPassPasswd = false;
+	
+	$().ready(function() {
+		
+		$("#isValidId").click(function(){
+			
+			let userId = $("#userId").val();
+		    if (userId == "") {
+		    	$("#isValidIdMsg").html("<span style='color:red;'>아이디를 입력하세요.</span>");
+		   		return;
+		    }
+		   
+		    $.ajax({
+		    	
+		       type : "post",
+		       url : "/user/validId",
+		       data : { "userId" : userId },
+		       success : function (isValidId) {
+		    	   
+		          if (isValidId == "y") {
+		          	$("#isValidIdMsg").html("<span style='color:green;'>사용가능한 아이디입니다.</span>");
+		          	isPassId = true;
+		          }
+		          else {
+	        		$("#isValidIdMsg").html("<span style='color:red;'>중복된 아이디입니다.</span>");
+	        		isPassId = false;
+		          }
+		          
+		       }
+		       
+		    });
+		    
+		});	
+		
+		
+		$("#isValidNickName").click(function(){
+			
+			let nickname = $("#nickname").val();
+		    if (nickname == "") {
+		    	$("#isValidNickNameMsg").html("<span style='color:red;'>닉네임을 입력하세요.</span>");
+		   		return;
+		    }
+		   
+		    $.ajax({
+		    	
+		       type : "post",
+		       url : "/user/validNickName",
+		       data : { "nickname" : nickname },
+		       success : function (isValidNickName) {
+		    	   
+		          if (isValidNickName == "y") {
+		          	  $("#isValidNickNameMsg").html("<span style='color:green;'>사용가능한 닉네임입니다.</span>");
+		          	  isPassNickName = true;
+		          }
+		          else {
+	        		  $("#isValidNickNameMsg").html("<span style='color:red;'>중복된 닉네임입니다.</span>");
+	        		  isPassNickName = false;
+		          }
+		          
+		       }
+		       
+		    });
+		    
+		});	
+		
+		
+		$("#confirmPasswd").blur(function(){
+			
+			let passwd = $("#passwd").val();
+			let confirmPasswd = $("#confirmPasswd").val();
+			
+			if (passwd == confirmPasswd) {
+				$("#isValidPasswdMsg").html("<span style='color:green;'>패스워드가 일치합니다.</span>");
+				isPassPasswd = true;
+			}
+			else {
+				$("#isValidPasswdMsg").html("<span style='color:red;'>패스워드가 일치하지 않습니다.</span>");
+				isPassPasswd = false;
+			}
+			
+		});	
+		
+	});
+	
+	
+	function checkFormValidation() {
+
+		if (!isPassId) {
+			alert("아이디를 확인해주세요.");
+			$("#userId").focus();
+			return false;
+		}
+		if (!isPassNickName) {
+			alert("닉네임을 확인해주세요.");
+			$("#nickname").focus();
+			return false;
+		}
+		
+		if (!isPassPasswd) {
+			alert("패스워드를 확인해주세요.");
+			$("#confirmPasswd").focus();
+			return false;
+		}
+	}
+	
+	
+</script>
+</head>
+<body>
+
+	<p align="right">
+		<a th:href="@{/post/postList}">(공통)커뮤니티 게시글로 이동</a> 
+		<th:block th:if="${session.userId == null}">
+			<a th:href="@{/user/signIn}">로그인</a>
+		</th:block>
+		<th:block th:if="${session.userId != null}">
+			<a th:href="@{/user/myPage}">마이페이지</a> 
+			<a th:href="@{/user/signOut}">로그아웃</a>
+		</th:block>
+	</p>
+	
+	<div align="center">
+		<form th:action="@{/user/signUp}" th:onsubmit="return checkFormValidation();" method="post" enctype="multipart/form-data">
+			<h3>회원가입</h3>
+			<table border="1">
+				<tr>
+					<td>아이디</td>
+					<td>
+			            <input type="text" id="userId" name="userId" placeholder="아이디" required/> 
+			            <input type="button" id="isValidId" value="중복확인" />&emsp;
+			            <span id="isValidIdMsg"></span>
+			        </td>
+			    </tr>
+		        <tr>
+			        <td>닉네임</td>
+			        <td>
+			        	<input type="text" id="nickname" name="nickname" placeholder="이름" required/> 
+			        	<input type="button" id="isValidNickName" value="중복확인" />&emsp;
+			        	 <span id="isValidNickNameMsg"></span>
+			        </td>
+		        </tr>                
+		        <tr>
+			        <td>비밀번호</td>
+			        <td><input type="password" id="passwd" name="passwd" placeholder="비밀번호" required/></td>
+		        </tr>
+		        <tr>
+			        <td>비밀번호 확인</td>
+			        <td>
+			        	<input type="password" id="confirmPasswd" placeholder="비밀번호확인" required/>&emsp;
+			        	<span id="isValidPasswdMsg"></span>
+			        </td>
+		        </tr>
+		        <tr>
+			        <td>프로필</td>
+			        <td><input type="file" name="uploadProfile" required/></td>
+		        </tr>                              
+		        <tr>
+			        <td>이메일</td>
+			        <td>
+			        	<input type="email" name="email" required>  
+			        </td>
+		        </tr>
+		        <tr>
+			        <td colspan="2" align="center">
+			        	<input type="submit" value="회원가입하기"  >
+			        </td>
+			    </tr>
+			    <tr>
+			        <td colspan="2" align="center">
+			        	이미 회원가입이 되어있다면 ? <a th:href="@{/user/signIn}">로그인하기</a>
+			        </td>
+		        </tr>                            
+		     </table>
+	     </form>
+	</div>
+
+</body>
+</html>

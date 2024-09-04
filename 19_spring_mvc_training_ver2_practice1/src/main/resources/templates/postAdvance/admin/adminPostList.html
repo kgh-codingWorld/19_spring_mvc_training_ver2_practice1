@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Admin Post List</title>
+</head>
+<body>
+
+	<p align="right">
+		<th:block th:if="${session.adminId != null}">
+			<a th:href="@{/admin/main}">(공통)관리화면으로 이동</a> 
+			<a th:href="@{/admin/signOut}">로그아웃</a>
+		</th:block>
+	</p>
+
+	<div align="center">
+		<h2>커뮤니티 게시글 리스트</h2>
+		<table border="1">
+			<tr align="center">
+				<th>게시글 번호</th>
+				<th>게시글 ID</th>
+				<th>유저 ID</th>
+				<th>게시글 제목</th>
+				<th>조회수</th>
+				<th>게시글 등록일</th>
+			</tr>
+			<tr align="center" th:each="postDTO : ${postList}">
+				<td th:text="${postDTOStat.count}"></td>
+				<td th:text="${postDTO.postId}"></td>
+				<td th:text="${postDTO.userId}"></td>
+				<td th:text="${postDTO.subject}"></td>
+				<td th:text="${postDTO.readCnt}"></td>
+				<td th:text="${#dates.format(postDTO.enrollAt , 'yyyy-MM-dd')}"></td>
+			</tr>
+		</table>
+	</div>
+	
+</body>
+</html>

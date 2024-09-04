@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Create Reply</title>
+</head>
+<body>
+
+	<p align="right">
+		<a th:href="@{/post/postList}">(공통)커뮤니티 게시글로 이동</a> 
+		<th:block th:if="${session.userId == null}">
+			<a th:href="@{/user/signIn}">로그인</a>
+		</th:block>
+		<th:block th:if="${session.userId != null}">
+			<a th:href="@{/user/myPage}">마이페이지</a> 
+			<a th:href="@{/user/signOut}">로그아웃</a>
+		</th:block>
+	</p>
+	
+	<div align="center">
+		<form th:action="@{/reply/createReply}" method="post" >
+			<h2>댓글 작성하기</h2>
+			<table border="1">
+				<tr>
+					<td>작성자</td>
+					<td><input type="text" name="nickname" th:value="${session.nickname}" readonly /></td>
+				</tr>
+				<tr>
+					<td>글내용</td>
+					<td>
+						<textarea rows="10" cols="50" name="content" placeholder="200자 이내로 작성하세요."></textarea>
+					</td>
+				</tr>
+				<tr align="center">
+					<td colspan="2">
+						<input type="hidden" name="userId" th:value="${session.userId }">
+						<input type="hidden" name="postId" th:value="${postId }">
+						<input type="submit" value="댓글쓰기">
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+</body>
+</html>

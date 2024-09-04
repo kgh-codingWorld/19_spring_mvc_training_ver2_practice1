@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Update Post</title>
+<script th:src="@{/ckeditor/ckeditor.js}"></script>  
+</head>
+<body>
+
+	<p align="right">
+		<a th:href="@{/post/postList}">(공통)커뮤니티 게시글로 이동</a> 
+		<th:block th:if="${session.userId == null}">
+			<a th:href="@{/user/signIn}">로그인</a>
+		</th:block>
+		<th:block th:if="${session.userId != null}">
+			<a th:href="@{/user/myPage}">마이페이지</a> 
+			<a th:href="@{/user/signOut}">로그아웃</a>
+		</th:block>
+	</p>
+	
+	<div align="center">
+		<h2>게시글 수정하기</h2>
+		<form th:action="@{/post/updatePost}" method="post">
+			<table border="1">
+				<tr>
+					<td>작성일</td>
+					<td th:text="${#dates.format(postMap.enrollAt , 'yyyy-MM-dd')}"></td>
+				</tr>
+				<tr>
+					<td>작성자</td>
+					<td><input type="text" name="userId" th:value="${postMap.userId}" readonly/></td>
+				</tr>
+				<tr>
+					<td>제목</td>
+					<td><input type="text" name="subject" th:value="${postMap.subject}" /></td>
+				</tr>
+				<tr>
+					<td>글내용</td>
+					<td>
+						<textarea rows="10" cols="60" name="content" th:text="${postMap.content}"></textarea>
+						<script>CKEDITOR.replace("content")</script>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" align="right">
+						<input type="hidden" name="postId" th:value="${postMap.postId}"/> 
+						<input type="submit" value="수정하기" />
+						<input type="button" th:onclick="|location.href='@{/post/postList}'|" value="전체글보기" />
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+</body>
+</html>

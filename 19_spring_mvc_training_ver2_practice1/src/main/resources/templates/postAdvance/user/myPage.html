@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>My Page</title>
+</head>
+<body>
+
+	<p align="right">
+		<a th:href="@{/post/postList}">(공통)커뮤니티 게시글로 이동</a> 
+		<th:block th:if="${session.userId == null}">
+			<a th:href="@{/user/signIn}">로그인</a>
+		</th:block>
+		<th:block th:if="${session.userId != null}">
+			<a th:href="@{/user/myPage}">마이페이지</a> 
+			<a th:href="@{/user/signOut}">로그아웃</a>
+		</th:block>
+	</p>
+	
+	<div align="center">
+		<h2>My Page</h2>
+		<table border="1">
+			<tr>
+				<th>유저 ID</th>
+				<td th:text="${userDTO.userId}"></td>
+			</tr>
+			<tr>
+				<th>유저 닉네임</th>
+				<td th:text="${userDTO.nickname}"></td>
+			</tr>
+			<tr>
+				<th>프로필</th>
+				<td><img th:src="@{/user/thumbnails(fileName=${userDTO.profileUUID})}"  width="50" height="50"/></td>
+			</tr>
+			<tr>
+				<th>작성한 게시글 수</th>
+				<td th:text="|${myPostCnt}개|"></td>
+			</tr>
+			<tr>
+				<th>작성한 댓글 수</th>
+				<td th:text="|${myReplyCnt}개|"></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center">
+					<input type="button" value="수정하기" 		   th:onclick="|location.href='@{/user/updateUser}'|">
+					<input type="button" value="비밀번호 변경하기" th:onclick="|location.href='@{/user/updatePasswd}'|">
+					<input type="button" value="탈퇴하기" 		   th:onclick="|location.href='@{/user/deleteUser}'|">
+				</td>
+			</tr>
+		</table>
+	</div>
+
+</body>
+</html>

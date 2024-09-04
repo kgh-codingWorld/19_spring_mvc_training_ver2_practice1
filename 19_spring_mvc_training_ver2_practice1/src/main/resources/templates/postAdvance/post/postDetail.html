@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Post Detail</title>
+<script>
+	
+	function processDeleteReply(replyId) {
+		
+		let isDelete = confirm("삭제하시겠습니까?");
+		
+		if (isDelete) {
+			location.href = "/reply/deleteReply?replyId=" + replyId;
+		}
+		
+	}
+
+</script>
+</head>
+<body>
+
+	<p align="right">
+		<a th:href="@{/post/postList}">(공통)커뮤니티 게시글로 이동</a> 
+		<th:block th:if="${session.userId == null}">
+			<a th:href="@{/user/signIn}">로그인</a>
+		</th:block>
+		<th:block th:if="${session.userId != null}">
+			<a th:href="@{/user/myPage}">마이페이지</a> 
+			<a th:href="@{/user/signOut}">로그아웃</a>
+		</th:block>
+	</p>
+	
+	<div align="center" >
+		<h2>커뮤니티 게시글 상세보기</h2>
+		<table border="1">
+			<tr>
+				<td>제목</td>
+				<td th:text="${postMap.subject }"></td>
+			</tr>
+			<tr>
+				<td>조회수</td>
+				<td th:text="${postMap.readCnt }"></td>
+			</tr>
+			<tr>
+				<td>작성자</td>
+				<td th:text="${postMap.nickname }"></td>
+			</tr>
+			<tr>
+				<td>작성자 프로필</td>
+				<td><img th:src="@{/user/thumbnails(fileName=${postMap.profileUUID})}" width="50" height="50"/></td>
+			</tr>
+			<tr>
+				<td>작성일</td>
+				<td th:text="${#dates.format(postMap.enrollAt , 'yyyy-MM-dd') }"></td>
+			</tr>
+			<tr>
+				<td>게시글 내용</td>
+				<td th:utext="${postMap.content }"></td>
+			</tr>
+			<tr align="right">
+				<td colspan="2">
+					<th:block th:if="${session.userId != null and session.userId == postMap.userId}">
+						<input type="button" value="게시글 수정"  th:onclick="|location.href='@{/post/updatePost(postId=${postMap.postId})}'|"/>
+						<input type="button" value="게시글 삭제"  th:onclick="|location.href='@{/post/deletePost(postId=${postMap.postId})}'|"/>
+					</th:block>
+					<input type="button" value="목록보기"  th:onclick="|location.href='@{/post/postList}'|">
+				</td>
+			</tr>
+		</table>
+		
+		<br/><hr/><br/>
+		
+		<h4 th:text="|댓글 리스트 (${allReplyCnt })|"></h4>
+		<table style="width: 700px;" border="1">
+			<tr th:each="replyMap : ${replyList}">
+				<td>
+					<img th:src="@{/user/thumbnails(fileName=${replyMap.profileUUID})}" width="50" height="50"> <br/>
+					 작성자 : <span th:text="${replyMap.nickname}"></span>
+					 / 작성일 : <span th:text="${#dates.format(replyMap.enrollAt , 'yyyy-MM-dd') }"></span> <br/>
+					<span th:text="${replyMap.content }"></span>
+					<th:block th:if="${session.userId != null and session.userId == replyMap.userId}">
+						<input type="button" value="수정" th:onclick="|location.href='@{/reply/updateReply(replyId=${replyMap.replyId})}'|" >
+						<input type="button" value="삭제" th:onclick="|processDeleteReply('${replyMap.replyId}')|">
+					</th:block>
+				</td>
+			</tr>
+			<th:block th:if="${session.userId != null}">
+				<tr>
+					<td align="right">
+						<input type="button" value="댓글작성" th:onclick="|location.href='@{/reply/createReply(postId=${postMap.postId})}'|">
+					</td>
+				</tr>
+			</th:block>
+		</table>
+		<th:block th:if="${session.userId == null}">
+			<p align="center">
+				로그인을 진행해주세요. <a th:href="@{/user/signIn}">로그인하기</a>
+			</p>
+		</th:block>				
+		
+	</div>
+</body>
+</html>

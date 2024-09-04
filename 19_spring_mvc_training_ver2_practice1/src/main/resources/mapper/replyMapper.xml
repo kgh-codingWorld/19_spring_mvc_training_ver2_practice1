@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.application.trainingVer2.postAdvance.dao.ReplyDAO">
+	
+	<!-- 댓글 관련 조회 데이터 매핑(Table Column -> Map key) -->
+	<resultMap id="replyMap" type="hashmap" >
+		<result column="REPLY_ID"  	   property="replyId"/>
+		<result column="USER_ID"  	   property="userId"/>
+		<result column="POST_ID" 	   property="postId"/>
+		<result column="CONTENT" 	   property="content"/>
+		<result column="ENROLL_AT" 	   property="enrollAt"/>
+		<result column="NICKNAME"     property="nickname"/>
+		<result column="PROFILE_UUID"  property="profileUUID"/>
+	</resultMap>
+
+	<!-- 1개의 게시글의 전체 댓글 조회 -->
+	<select id="getReplyList" parameterType="long" resultMap="replyMap">
+		SELECT  R.REPLY_ID      AS REPLY_ID,
+				R.POST_ID       AS POST_ID,
+				R.USER_ID       AS USER_ID,
+				R.CONTENT       AS CONTENT,
+				R.ENROLL_AT     AS ENROLL_AT,
+				U.NICKNAME     AS NICKNAME,
+				U.PROFILE_UUID  AS PROFILE_UUID
+		FROM 	REPLY R
+		JOIN    USER U
+		  ON    U.USER_ID = R.USER_ID 
+		WHERE	R.POST_ID = #{postId}
+	</select>
+	
+	<!-- 1개의 게시글의 전체 댓글 개수 조회 -->
+	<select id="getReplyCnt" parameterType="long" resultType="int">
+		SELECT 	COUNT(*) 
+		FROM 	REPLY
+		WHERE	POST_ID = #{postId}
+	</select>
+
+	<!-- 1개의 댓글 상세정보 조회 -->
+	<select id="getReplyDetail" parameterType="long" resultType="ReplyDTO">
+		SELECT	*
+		FROM	REPLY
+		WHERE	REPLY_ID = #{replyId}
+	</select>
+	
+	<!-- 댓글 작성 -->
+	<insert id="createReply" parameterType="ReplyDTO">
+		INSERT INTO REPLY (
+				USER_ID,
+				CONTENT,
+				POST_ID
+		)
+		VALUES (
+				#{userId},
+				#{content},
+				#{postId}
+		)
+	</insert>
+ 
+ 	<!-- 댓글 수정 -->
+	<update id="updateReply" parameterType="ReplyDTO">
+		UPDATE REPLY 
+		<set>
+			<if test="content != null and content != ''">
+				CONTENT = #{content}
+			</if>
+		</set>
+		WHERE  REPLY_ID = #{replyId}
+	</update>
+	
+	<!-- 댓글 삭제 -->
+	<delete id="deleteReply" parameterType="long">
+		DELETE FROM REPLY 
+		WHERE 		REPLY_ID = #{replyId}
+	</delete>
+	
+
+ </mapper>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>>Daily Reply Count</title>
+</head>
+<body>
+
+	<p align="right">
+		<th:block th:if="${session.adminId != null}">
+			<a th:href="@{/admin/main}">(공통)관리화면으로 이동</a> 
+			<a th:href="@{/admin/signOut}">로그아웃</a>
+		</th:block>
+	</p>
+
+	<div align="center" >
+		<h2>일자별 댓글수 조회</h2>
+		<table border="1">
+			<tr align="center">
+				<th>번호</th>
+				<th>일자</th>
+				<th>댓글수</th>
+			</tr>
+			<tr align="center" th:each="dailyReplyMap : ${dailyReplyCntMap}">
+				<td th:text="${dailyReplyMapStat.count}"></td>
+				<td th:text="${dailyReplyMap.day}"></td>
+				<td th:text="${dailyReplyMap.replyCnt}"></td>
+			</tr>
+		</table>
+	</div>
+	
+</body>
+</html>
